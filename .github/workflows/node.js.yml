@@ -28,22 +28,21 @@ jobs:
           cd api
           find . -name "*.js" -exec node --check {} +
 
-  gitleaks-scan:
+    gitleaks-scan:
     runs-on: Agent-1
     needs: compile
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Gitleaks Scan
+      - name: Gitleaks Setup
         uses: gitleaks/gitleaks-action@v2
-        with:
-          args: --source ./client --exit-code 1
 
-      - name: Run Gitleaks Scan (API)
-        uses: gitleaks/gitleaks-action@v2
-        with:
-          args: --source ./api --exit-code 1
+      - name: Gitleaks Scan
+        run: |
+          gitleaks detect --source ./client --exit-code 1
+          gitleaks detect --source ./api --exit-code 1
+
 
   trivy_fs_scan:
     runs-on: Agent-1
